@@ -1,0 +1,15 @@
+{
+  "routes": [
+    { "path": "/", "title": "Visão geral" },
+    { "path": "/campeonatos", "title": "Competições" },
+    { "path": "/inscricoes", "title": "Minhas inscrições" },
+    { "path": "/inscricoes/nova", "title": "Nova inscrição" },
+    { "path": "/partidas", "title": "Partidas" },
+    { "path": "/chaveamento", "title": "Chaveamento" },
+    { "path": "/classificacao", "title": "Classificação" },
+    { "path": "/equipes", "title": "Equipes e jogadores" },
+    { "path": "/equipes/:id", "title": "Detalhes da equipe" },
+    { "path": "/regulamento", "title": "Regulamento" },
+    { "path": "/admin", "title": "Administração" }
+  ]
+}
