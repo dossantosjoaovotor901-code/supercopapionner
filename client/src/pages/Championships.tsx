@@ -1,8 +1,11 @@
 import { ArrowRight, CalendarDays, CheckCircle2, Clock3, Coins, Shield, Trophy, Users } from "lucide-react";
 import { Link } from "wouter";
 import type { Championship } from "../../../shared/championship";
+import { registrationStatusLabels } from "../../../shared/championship";
 import { PageHeading } from "@/components/copa/ui";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
+import Registration from "./Registration";
 import "./competitions.css";
 
 const date = (value?: string) => {
@@ -13,7 +16,9 @@ const date = (value?: string) => {
 const money = (value = 0) => value ? value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) : "Grátis";
 
 export default function Championships({ state }: { state: Championship }) {
+  const { user } = useAuth();
   const editions = trpc.competitions.list.useQuery();
+  const myCompetitions = trpc.competitions.mine.useQuery(undefined, { enabled: Boolean(user) });
   const config = state.config;
   const active = (state.registrations ?? []).filter(item => !["cancelled", "expired", "rejected"].includes(item.status)).length;
   const maxTeams = config.maxTeams || 0;
@@ -74,6 +79,31 @@ export default function Championships({ state }: { state: Championship }) {
           <div className="competition-fact" key={label}><Icon size={19} /><span>{label}</span><strong>{value}</strong></div>
         ))}
       </section>
+      {user && (
+        <section className="competition-editions">
+          <div className="section-header"><div><span className="eyebrow">ÁREA DO CAPITÃO</span><h3>Minhas inscrições em competições</h3></div></div>
+          {myCompetitions.error ? <p className="competition-note">Não foi possível carregar suas inscrições. Tente novamente.</p> : myCompetitions.data?.length ? (
+            <div className="competition-edition-grid">
+              {myCompetitions.data.flatMap(edition => edition.registrations.map(registration => (
+                <article className="panel competition-edition-card" key={registration.id}>
+                  <span className="phase-pill">{registrationStatusLabels[registration.status]}</span>
+                  <h3>{registration.teamName}</h3>
+                  <p>{edition.competitionName} · {date(edition.eventDate)}</p>
+                  <div className="competition-edition-meta"><span>Código {registration.code}</span></div>
+                  <Link className="btn btn-ghost" href={`/inscricoes/nova?competitionId=${encodeURIComponent(edition.competitionId)}`}>Ver inscrição</Link>
+                </article>
+              )))}
+            </div>
+          ) : <p className="muted">Você ainda não se inscreveu em nenhuma competição.</p>}
+        </section>
+      )}
+      <Registration
+        entryFee={config.entryFee}
+        paymentDeadline={config.paymentDeadline}
+        registrationDeadline={config.registrationDeadline}
+        pixKey={config.pixKey}
+        pixReceiver={config.pixReceiver}
+      />
       <div className="competition-columns">
         <section className="panel competition-info-card">
           <div className="section-header"><div><span className="eyebrow">COMO FUNCIONA</span><h3>Do cadastro ao jogo</h3></div><CheckCircle2 className="blue" size={22} /></div>

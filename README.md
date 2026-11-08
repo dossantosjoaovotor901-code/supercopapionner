@@ -57,14 +57,16 @@ Na aba **Competições** do painel `/admin`, a organização pode criar várias 
 
 Rotas: `/campeonatos` lista as edições, `/inscricoes/nova?competitionId=...` abre a inscrição ou acompanhamento, e `/museu` exibe o acervo concluído.
 
-A organização ganhou a aba **Inscrições** no painel `/admin`. A fila mostra equipe, capitão, elenco, status e arquivo enviado. O administrador pode colocar a solicitação em análise, aprovar, recusar ou pedir um novo comprovante. As transições são persistidas no snapshot e registradas no histórico da inscrição. A página de configurações também permite alterar modalidade, tipo Copa/Liga, taxa, premiação, limite de equipes, prazos e dados do Pix.
+A organização gerencia as competições e a fila de inscrições na mesma aba **Competições e inscrições** do painel `/admin`. A fila mostra equipe, capitão, elenco, status e arquivo enviado. O administrador pode colocar a solicitação em análise, aprovar, recusar ou pedir um novo comprovante. As transições são persistidas no snapshot e registradas no histórico da inscrição. A página de configurações também permite alterar modalidade, tipo Copa/Liga, taxa, premiação, limite de equipes, prazos e dados do Pix.
 
 O fluxo usa o mesmo banco do campeonato, tanto no modo gerenciado quanto no modo self-hosted SQLite. Snapshots antigos recebem defaults automaticamente; não é necessário recriar o banco para preservar times, partidas, chaveamento ou replays existentes.
+
+O menu principal reúne o acompanhamento das inscrições na página **Competições**. No painel administrativo, o botão **Apagar** remove a competição selecionada e suas inscrições/partidas após confirmação.
 
 ### Rotas adicionadas
 
 - `/campeonatos`: vitrine da competição, modalidade, vagas, taxa, premiação e prazos.
-- `/inscricoes`: inscrições do usuário autenticado, histórico e envio de comprovante.
+- `/inscricoes`: acesso direto às inscrições do usuário autenticado; a área também aparece em `/campeonatos`.
 - `/inscricoes/nova`: formulário de equipe, capitão, elenco e aceites obrigatórios.
 
 ### Configuração do Pix e Discord

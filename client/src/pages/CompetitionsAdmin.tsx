@@ -1,7 +1,17 @@
 import { FormEvent, useState } from "react";
-import { CalendarDays, Check, CircleDollarSign, Play, Plus, Trophy, X } from "lucide-react";
+import { CalendarDays, Check, CircleDollarSign, Play, Plus, Trash2, Trophy, X } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import type { CompetitionEdition } from "../../../shared/championship";
 import { registrationStatusLabels } from "../../../shared/championship";
 
@@ -74,6 +84,7 @@ export default function CompetitionsAdmin() {
   const [maxTeams, setMaxTeams] = useState("16");
   const [prize, setPrize] = useState("");
   const [venue, setVenue] = useState("");
+  const [competitionToDelete, setCompetitionToDelete] = useState<CompetitionEdition | null>(null);
   const create = trpc.competitions.create.useMutation({
     onSuccess: () => {
       toast.success("Competição criada.");
@@ -103,6 +114,16 @@ export default function CompetitionsAdmin() {
     onSuccess: () => {
       toast.success("Inscrição atualizada.");
       void utils.competitions.adminList.invalidate();
+    },
+    onError: error => toast.error(error.message),
+  });
+  const remove = trpc.competitions.delete.useMutation({
+    onSuccess: () => {
+      toast.success("Competição apagada.");
+      setCompetitionToDelete(null);
+      void utils.competitions.adminList.invalidate();
+      void utils.competitions.list.invalidate();
+      void utils.competitions.museum.invalidate();
     },
     onError: error => toast.error(error.message),
   });
@@ -142,22 +163,45 @@ export default function CompetitionsAdmin() {
       </section>
 
       <section className="competition-admin-list">
-        <div className="section-header"><div><span className="eyebrow">EDIÇÕES ATIVAS</span><h2>Competições</h2></div><Trophy className="blue" size={21} /></div>
+        <div className="section-header"><div><span className="eyebrow">EDIÇÕES CADASTRADAS</span><h2>Competições</h2></div><Trophy className="blue" size={21} /></div>
         {list.data?.map(edition => {
           const registrations = edition.state.registrations ?? [];
           const confirmed = registrations.filter(item => item.status === "confirmed").length;
           return (
             <article className="panel competition-admin-edition" key={edition.id}>
-              <header><div><span className="phase-pill is-open">{edition.type === "weekly" ? "SEMANAL" : edition.type === "league" ? "LIGA" : "COPA"}</span><h3>{edition.state.config.name}</h3></div><span><CalendarDays size={14} /> {edition.eventDate}</span></header>
+              <header><div><span className={`phase-pill${edition.status === "registration" ? " is-open" : ""}`}>{edition.type === "weekly" ? "SEMANAL" : edition.type === "league" ? "LIGA" : "COPA"} · {edition.status === "registration" ? "INSCRIÇÕES" : edition.status === "completed" ? "CONCLUÍDA" : "EM ANDAMENTO"}</span><h3>{edition.state.config.name}</h3></div><div className="competition-admin-header-actions"><span><CalendarDays size={14} /> {edition.eventDate}</span><button className="btn btn-ghost competition-delete-button" type="button" onClick={() => setCompetitionToDelete(edition)}><Trash2 size={15} /> Apagar</button></div></header>
               <div className="competition-admin-stats"><span><strong>{registrations.length}</strong> inscrições</span><span><strong>{confirmed}</strong> confirmadas</span><span><CircleDollarSign size={14} /> {edition.state.config.entryFee ? `R$ ${edition.state.config.entryFee}` : "Grátis"}</span></div>
               {!!registrations.length && <div className="competition-admin-registrations">{registrations.map(registration => <div key={registration.id}><span><strong>{registration.teamName}</strong><small>{registration.code} · {registrationStatusLabels[registration.status]}</small></span>{registration.status !== "confirmed" && registration.status !== "rejected" && <span><button aria-label={`Aprovar ${registration.teamName}`} onClick={() => review.mutate({ competitionId: edition.id, registrationId: registration.id, action: "approve" })}><Check size={16} /></button><button aria-label={`Recusar ${registration.teamName}`} onClick={() => review.mutate({ competitionId: edition.id, registrationId: registration.id, action: "reject" })}><X size={16} /></button></span>}</div>)}</div>}
               {edition.status === "registration" ? <button className="btn btn-primary" disabled={start.isPending || confirmed < 2} onClick={() => start.mutate({ competitionId: edition.id })}><Play size={15} /> Gerar partidas e iniciar {edition.type === "weekly" ? "mini campeonato" : "competição"}</button> : <CompetitionMatches edition={edition} onResult={input => result.mutate(input)} />}
             </article>
           );
         })}
-        {!list.data?.length && <p className="muted">Nenhuma edição ativa cadastrada.</p>}
+        {!list.data?.length && <p className="muted">Nenhuma competição cadastrada.</p>}
       </section>
       {!!museum.data?.length && <p className="muted">Museu: {museum.data.length} edição(ões) concluída(s) arquivada(s) automaticamente.</p>}
+      <AlertDialog open={Boolean(competitionToDelete)} onOpenChange={open => { if (!open && !remove.isPending) setCompetitionToDelete(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Apagar esta competição?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {competitionToDelete ? `“${competitionToDelete.state.config.name}” e seus dados de inscrições e partidas serão removidos permanentemente.` : "A competição e seus dados serão removidos permanentemente."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={remove.isPending}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              disabled={remove.isPending || !competitionToDelete}
+              onClick={event => {
+                event.preventDefault();
+                if (competitionToDelete) remove.mutate({ competitionId: competitionToDelete.id });
+              }}
+            >
+              {remove.isPending ? "Apagando..." : "Apagar competição"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

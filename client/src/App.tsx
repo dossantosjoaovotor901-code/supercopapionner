@@ -11,7 +11,6 @@ import {
   LogOut,
   Medal,
   Menu,
-  ClipboardPenLine,
   Search,
   Settings2,
   Shield,
@@ -48,7 +47,6 @@ import "./registration.css";
 const navigation = [
   { path: "/", label: "Visão geral", Icon: LayoutDashboard },
   { path: "/campeonatos", label: "Competições", Icon: Medal },
-  { path: "/inscricoes", label: "Inscrições", Icon: ClipboardPenLine },
   { path: "/partidas", label: "Partidas", Icon: CalendarDays },
   { path: "/chaveamento", label: "Chaveamento", Icon: GitBranch },
   { path: "/classificacao", label: "Classificação", Icon: Trophy },

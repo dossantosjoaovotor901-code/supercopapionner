@@ -277,6 +277,23 @@ function updateCompetition(
   return { ...state, competitions: editions };
 }
 
+export function removeCompetitionEdition(
+  state: Championship,
+  competitionId: string
+): Championship {
+  const competitions = state.competitions ?? [];
+  if (!competitions.some(edition => edition.id === competitionId)) {
+    throw new TRPCError({
+      code: "NOT_FOUND",
+      message: "Competição não encontrada.",
+    });
+  }
+  return {
+    ...state,
+    competitions: competitions.filter(edition => edition.id !== competitionId),
+  };
+}
+
 function isCompetitionArchived(edition: CompetitionEdition) {
   return (
     edition.status === "completed" ||
@@ -968,9 +985,7 @@ export const appRouter = router({
     }),
     adminList: adminProcedure.query(async () => {
       const snapshot = await getChampionshipSnapshot();
-      return (snapshot.state.competitions ?? []).filter(
-        edition => !isCompetitionArchived(edition)
-      );
+      return snapshot.state.competitions ?? [];
     }),
     get: publicProcedure
       .input(z.object({ competitionId: z.string() }))
@@ -1038,6 +1053,18 @@ export const appRouter = router({
           snapshot.revision
         );
         return { competitionId: id, snapshot: result };
+      }),
+    delete: adminProcedure
+      .input(z.object({
+        competitionId: z.string().regex(/^[A-Za-z0-9][A-Za-z0-9._:-]*$/),
+      }))
+      .mutation(async ({ input }) => {
+        const snapshot = await getChampionshipSnapshot();
+        const result = await saveChampionshipSnapshot(
+          removeCompetitionEdition(snapshot.state, input.competitionId),
+          snapshot.revision
+        );
+        return result;
       }),
     register: protectedProcedure
       .input(competitionRegistrationInputSchema)

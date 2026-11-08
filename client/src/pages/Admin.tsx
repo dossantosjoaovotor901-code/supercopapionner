@@ -73,7 +73,6 @@ type TabId =
   | "matches"
   | "phases"
   | "announcements"
-  | "registrations"
   | "competitions"
   | "settings";
 type Entity = "team" | "player" | "match" | "phase" | "announcement" | "config";
@@ -92,7 +91,6 @@ const TABS: { id: TabId; label: string; icon: LucideIcon }[] = [
   { id: "matches", label: "Partidas", icon: CalendarDays },
   { id: "phases", label: "Fases", icon: GitBranch },
   { id: "announcements", label: "Avisos", icon: Megaphone },
-  { id: "registrations", label: "Inscrições", icon: ReceiptText },
   { id: "competitions", label: "Competições", icon: CalendarDays },
   { id: "settings", label: "Configurações", icon: Settings2 },
 ];
@@ -2561,9 +2559,13 @@ export default function Admin({
           onDelete={id => askDelete("announcement", id)}
         />
       );
-    if (tab === "registrations")
-      return <AdminRegistrations state={state} onRefresh={onRefresh} />;
-    if (tab === "competitions") return <CompetitionsAdmin />;
+    if (tab === "competitions")
+      return (
+        <div className="adm-stack">
+          <CompetitionsAdmin />
+          <AdminRegistrations state={state} onRefresh={onRefresh} />
+        </div>
+      );
     return (
       <Settings state={state} onEdit={() => setEditor({ kind: "config" })} />
     );

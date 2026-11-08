@@ -7,6 +7,7 @@ import { buildDemoChampionship } from "./seed";
 import {
   applyCompetitionResult,
   buildCompetitionSchedule,
+  removeCompetitionEdition,
 } from "./routers";
 
 function registration(index: number): Registration {
@@ -124,5 +125,26 @@ describe("competition editions", () => {
     );
     expect(scheduled.state.matches).toHaveLength(3);
     expect(scheduled.state.matches.every(match => match.scheduledAt.startsWith(scheduled.eventDate))).toBe(true);
+  });
+
+  it("removes a competition without changing other editions", () => {
+    const first = edition("weekly", []);
+    const second = { ...edition("cup", []), id: "keep-this-one" };
+    const state = {
+      ...buildDemoChampionship(),
+      competitions: [first, second],
+    };
+
+    const result = removeCompetitionEdition(state, first.id);
+
+    expect(result.competitions).toEqual([second]);
+    expect(state.competitions).toEqual([first, second]);
+  });
+
+  it("returns not found when deleting an unknown competition", () => {
+    const state = { ...buildDemoChampionship(), competitions: [] };
+    expect(() => removeCompetitionEdition(state, "missing")).toThrow(
+      "Competição não encontrada."
+    );
   });
 });
