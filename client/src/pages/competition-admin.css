@@ -1,1 +1,262 @@
-.competition-admin-header-actions{display:flex;align-items:center;gap:10px}.competition-admin-header-actions>span{display:flex;align-items:center;gap:5px;color:#78869b;font-size:11px}.competition-delete-button{min-height:32px;padding:6px 9px;color:#b23a4c;border-color:#f1d4d9;font-size:11px}.competition-delete-button:hover{background:#fff0f2}
+.competition-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.competition-admin-create {
+  padding: 22px;
+}
+
+.competition-admin-form {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.competition-admin-form label {
+  display: grid;
+  gap: 6px;
+  color: #52637b;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.competition-admin-form input,
+.competition-admin-form select {
+  width: 100%;
+  min-width: 0;
+  height: 38px;
+  padding: 0 10px;
+  color: #283c5a;
+  background: #fbfdff;
+  border: 1px solid #dfe7f2;
+  border-radius: 8px;
+}
+
+.competition-admin-form input:focus,
+.competition-admin-form select:focus {
+  border-color: #7ca5ef;
+  outline: 0;
+  box-shadow: 0 0 0 3px #dbe8ff;
+}
+
+.competition-admin-form > button {
+  align-self: end;
+  min-height: 38px;
+}
+
+.competition-admin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.competition-admin-edition {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+}
+
+.competition-admin-edition > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.competition-admin-edition > header > div:first-child {
+  display: grid;
+  gap: 7px;
+}
+
+.competition-admin-edition h3 {
+  color: #223958;
+  font-family: var(--font-heading);
+  font-size: 23px;
+}
+
+.competition-admin-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.competition-admin-header-actions > span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #78869b;
+  font-size: 11px;
+}
+
+.competition-delete-button {
+  min-height: 32px;
+  padding: 6px 9px;
+  color: #b23a4c;
+  border-color: #f1d4d9;
+  font-size: 11px;
+}
+
+.competition-delete-button:hover {
+  background: #fff0f2;
+}
+
+.competition-admin-stats {
+  display: flex;
+  gap: 20px;
+  color: #7a8799;
+  font-size: 11px;
+}
+
+.competition-admin-stats > span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.competition-admin-stats strong {
+  color: #304a6d;
+}
+
+.competition-admin-registrations {
+  display: grid;
+  gap: 6px;
+}
+
+.competition-admin-registrations > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 11px;
+  background: #f7f9fc;
+  border-radius: 8px;
+}
+
+.competition-admin-registrations > div > span:first-child {
+  display: grid;
+  gap: 3px;
+}
+
+.competition-admin-registrations strong {
+  color: #344a68;
+  font-size: 12px;
+}
+
+.competition-admin-registrations small {
+  color: #8491a4;
+  font-size: 10px;
+}
+
+.competition-admin-registrations > div > span:last-child {
+  display: flex;
+  gap: 6px;
+}
+
+.competition-admin-registrations button {
+  display: grid;
+  place-items: center;
+  width: 29px;
+  height: 29px;
+  color: var(--primary);
+  background: #eaf1ff;
+  border-radius: 7px;
+}
+
+.competition-admin-registrations button:last-child {
+  color: #bb4557;
+  background: #fff0f2;
+}
+
+.competition-admin-matches {
+  display: grid;
+  gap: 7px;
+}
+
+.competition-admin-match {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px;
+  background: #f7f9fc;
+  border-radius: 8px;
+}
+
+.competition-admin-match > strong {
+  flex: 1;
+  min-width: 100px;
+  color: #344a68;
+  font-size: 11px;
+}
+
+.competition-admin-match > strong:last-child {
+  text-align: right;
+}
+
+.competition-admin-match > input {
+  width: 53px;
+  height: 34px;
+  padding: 4px;
+  text-align: center;
+  border: 1px solid #dbe3ee;
+  border-radius: 6px;
+}
+
+.competition-admin-match > button {
+  min-height: 32px;
+  padding: 7px 10px;
+  font-size: 10px;
+}
+
+.competition-score {
+  font-weight: 800;
+  color: #203b64;
+}
+
+.competition-admin-match > .muted {
+  font-size: 10px;
+}
+
+@media (max-width: 1100px) {
+  .competition-admin-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .competition-admin-create,
+  .competition-admin-edition {
+    padding: 16px;
+  }
+
+  .competition-admin-edition > header {
+    flex-direction: column;
+  }
+
+  .competition-admin-header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 540px) {
+  .competition-admin-form {
+    grid-template-columns: 1fr;
+  }
+
+  .competition-admin-stats {
+    gap: 9px;
+    flex-wrap: wrap;
+  }
+
+  .competition-admin-match > strong {
+    min-width: 40%;
+  }
+
+  .competition-admin-match > strong:last-child {
+    text-align: left;
+  }
+}

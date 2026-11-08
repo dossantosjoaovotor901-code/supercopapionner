@@ -2094,15 +2094,6 @@ function Settings({
             </div>
           </dl>
         </section>
-        <section className="adm-panel">
-          <span className="adm-section-kicker">Inscrições e financeiro</span>
-          <dl className="adm-detail-list">
-            <div><dt><Users size={15} /> Modalidade</dt><dd>{state.config.modality || "X5"} · {state.config.competitionType === "weekly" ? "Semanal" : state.config.competitionType === "league" ? "Liga" : "Copa"}</dd></div>
-            <div><dt><ReceiptText size={15} /> Taxa / premiação</dt><dd>{(state.config.entryFee || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} · {state.config.prize || "A definir"}</dd></div>
-            <div><dt><CalendarDays size={15} /> Janela de inscrição</dt><dd>{state.config.registrationDeadline || "A definir"} · pagamento: {state.config.paymentDeadline || "sem prazo"}</dd></div>
-            <div><dt><ShieldAlert size={15} /> Vagas</dt><dd>{(state.registrations ?? []).filter(item => !["cancelled", "expired", "rejected"].includes(item.status)).length} / {state.config.maxTeams || "—"} ocupadas</dd></div>
-          </dl>
-        </section>
         <section className="adm-panel adm-rules-panel">
           <div className="adm-section-header">
             <span className="adm-section-kicker">Regulamento público</span>
