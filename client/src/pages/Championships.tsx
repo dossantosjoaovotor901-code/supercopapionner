@@ -5,7 +5,6 @@ import { registrationStatusLabels } from "../../../shared/championship";
 import { PageHeading } from "@/components/copa/ui";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import Registration from "./Registration";
 import "./competitions.css";
 
 const date = (value?: string) => {
@@ -97,13 +96,6 @@ export default function Championships({ state }: { state: Championship }) {
           ) : <p className="muted">Você ainda não se inscreveu em nenhuma competição.</p>}
         </section>
       )}
-      <Registration
-        entryFee={config.entryFee}
-        paymentDeadline={config.paymentDeadline}
-        registrationDeadline={config.registrationDeadline}
-        pixKey={config.pixKey}
-        pixReceiver={config.pixReceiver}
-      />
       <div className="competition-columns">
         <section className="panel competition-info-card">
           <div className="section-header"><div><span className="eyebrow">COMO FUNCIONA</span><h3>Do cadastro ao jogo</h3></div><CheckCircle2 className="blue" size={22} /></div>
