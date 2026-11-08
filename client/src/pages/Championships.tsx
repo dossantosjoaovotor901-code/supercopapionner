@@ -22,6 +22,15 @@ export default function Championships({ state }: { state: Championship }) {
   const active = (state.registrations ?? []).filter(item => !["cancelled", "expired", "rejected"].includes(item.status)).length;
   const maxTeams = config.maxTeams || 0;
   const open = !config.registrationDeadline || new Date(`${config.registrationDeadline}T23:59:59`).getTime() >= Date.now();
+  const firstOpenEdition = editions.data?.find(edition =>
+    edition.status === "registration" &&
+    (!edition.state.config.registrationDeadline ||
+      new Date(`${edition.state.config.registrationDeadline}T23:59:59`).getTime() >= Date.now())
+  );
+  const featuredEdition = firstOpenEdition ?? editions.data?.[0];
+  const registrationHref = featuredEdition
+    ? `/inscricoes/nova?competitionId=${encodeURIComponent(featuredEdition.id)}`
+    : "#agenda-scp";
   return (
     <div className="competition-page">
       <PageHeading
@@ -36,14 +45,17 @@ export default function Championships({ state }: { state: Championship }) {
           <h2>{config.name}</h2>
           <p>{config.subtitle || "A competição da comunidade HaxBall começa aqui."}</p>
           <div className="competition-actions">
-            <Link className="btn btn-primary" href="/inscricoes/nova">Inscrever minha equipe <ArrowRight size={15} /></Link>
+            <Link className="btn btn-primary" href={registrationHref}>
+              {firstOpenEdition ? "Inscrever minha equipe" : featuredEdition ? "Acompanhar competição" : "Ver agenda"}
+              <ArrowRight size={15} />
+            </Link>
             <Link className="btn btn-ghost" href="/regulamento">Ler regulamento</Link>
           </div>
         </div>
         <div className="competition-hero-mark"><Trophy size={74} strokeWidth={1.1} /><strong>{config.modality || "X5"}</strong><span>{config.competitionType === "weekly" ? "Semanal" : config.competitionType === "league" ? "Liga" : "Copa"}</span></div>
       </section>
       {!!editions.data?.length && (
-        <section className="competition-editions">
+        <section className="competition-editions" id="agenda-scp">
           <div className="section-header"><div><span className="eyebrow">AGENDA SCP</span><h3>Próximas competições</h3></div></div>
           <div className="competition-edition-grid">
             {editions.data.map(edition => {

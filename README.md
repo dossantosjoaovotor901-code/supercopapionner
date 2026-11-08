@@ -55,9 +55,11 @@ O site agora possui uma área pública de competições em `/campeonatos` e um f
 
 Na aba **Competições** do painel `/admin`, a organização pode criar várias edições independentes, cada uma com data, limite de equipes, taxa, premiação e inscrições próprias. O formato **Semanal** é um mini campeonato eliminatório realizado em um único dia; quando as partidas são concluídas, a edição é arquivada automaticamente em `/museu`. A página pública de cada edição permite acompanhar os resultados, e uma conta pode inscrever mais de uma equipe enquanto as inscrições estiverem abertas.
 
+O formulário público de cada edição foi dividido em três etapas: identificação da equipe e contato do capitão, montagem do elenco com indicação do capitão, e revisão/aceite dos termos. O resumo da competição e o status da inscrição ficam visíveis junto ao formulário; a chamada principal de inscrição direciona para uma edição disponível.
+
 Rotas: `/campeonatos` lista as edições, `/inscricoes/nova?competitionId=...` abre a inscrição ou acompanhamento, e `/museu` exibe o acervo concluído.
 
-A organização gerencia as competições e a fila de inscrições na mesma aba **Competições e inscrições** do painel `/admin`. A fila mostra equipe, capitão, elenco, status e arquivo enviado. O administrador pode colocar a solicitação em análise, aprovar, recusar ou pedir um novo comprovante. As transições são persistidas no snapshot e registradas no histórico da inscrição. A página de configurações também permite alterar modalidade, tipo Copa/Liga, taxa, premiação, limite de equipes, prazos e dados do Pix.
+A organização gerencia as competições e a fila de inscrições na mesma aba **Competições** do painel `/admin`. A fila mostra equipe, capitão, elenco, status e arquivo enviado. O administrador pode colocar a solicitação em análise, aprovar, recusar ou pedir um novo comprovante. As transições são persistidas no snapshot e registradas no histórico da inscrição. A página de configurações também permite alterar modalidade, tipo Copa/Liga, taxa, premiação, limite de equipes, prazos e dados do Pix.
 
 O fluxo usa o mesmo banco do campeonato, tanto no modo gerenciado quanto no modo self-hosted SQLite. Snapshots antigos recebem defaults automaticamente; não é necessário recriar o banco para preservar times, partidas, chaveamento ou replays existentes.
 
